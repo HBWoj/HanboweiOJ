@@ -1,4 +1,5 @@
 """Database engine and SQLAlchemy session dependency."""
+
 import os
 from collections.abc import Generator
 

@@ -3,9 +3,10 @@
 Revision ID: 0001_users
 Revises:
 """
-from alembic import op
+
 import sqlalchemy as sa
-from sqlalchemy.dialects import postgresql
+
+from alembic import op
 
 revision = "0001_users"
 down_revision = None
@@ -22,8 +23,12 @@ def upgrade() -> None:
         sa.Column("password_hash", sa.String(length=255), nullable=False),
         sa.Column("role", sa.String(length=16), nullable=False),
         sa.Column("is_active", sa.Boolean(), nullable=False),
-        sa.Column("created_at", sa.DateTime(timezone=True), server_default=sa.func.now(), nullable=False),
-        sa.Column("updated_at", sa.DateTime(timezone=True), server_default=sa.func.now(), nullable=False),
+        sa.Column(
+            "created_at", sa.DateTime(timezone=True), server_default=sa.func.now(), nullable=False
+        ),
+        sa.Column(
+            "updated_at", sa.DateTime(timezone=True), server_default=sa.func.now(), nullable=False
+        ),
         sa.CheckConstraint("role IN ('admin', 'teacher', 'student')", name="ck_users_role"),
         sa.PrimaryKeyConstraint("id"),
         sa.UniqueConstraint("username"),
