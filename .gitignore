@@ -37,3 +37,4 @@ Thumbs.db
 
 # TypeScript build cache
 *.tsbuildinfo
+frontend/next-env.d.ts
