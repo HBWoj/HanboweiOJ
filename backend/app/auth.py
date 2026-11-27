@@ -30,9 +30,7 @@ def authenticate_user(
 
     user = None
     if canonical_username is not None:
-        user = session.scalar(
-            select(User).where(User.username == canonical_username)
-        )
+        user = session.scalar(select(User).where(User.username == canonical_username))
 
     # Verify against a real or dummy hash so unknown usernames do not skip the
     # expensive password-verification step.
