@@ -144,3 +144,64 @@ def test_user_active_status_can_be_updated() -> None:
         assert saved.is_active is False
 
     engine.dispose()
+
+
+def test_user_model_normalizes_username() -> None:
+    """用户名在 ORM 写入前统一转换为小写。"""
+    engine = create_test_engine()
+
+    with Session(engine) as session:
+        user = User(
+            username="Student006",
+            display_name="Student Six",
+            password_hash="test-hash",
+        )
+        session.add(user)
+        session.commit()
+
+        saved = session.scalar(select(User).where(User.username == "student006"))
+
+        assert saved is not None
+        assert saved.username == "student006"
+
+    engine.dispose()
+
+
+def test_username_with_different_case_is_duplicate() -> None:
+    """大小写不同的同一用户名不能创建两个账户。"""
+    engine = create_test_engine()
+
+    with Session(engine) as session:
+        first_user = User(
+            username="Student007",
+            display_name="Student Seven",
+            password_hash="test-hash-1",
+        )
+        second_user = User(
+            username="STUDENT007",
+            display_name="Another Student",
+            password_hash="test-hash-2",
+        )
+
+        session.add(first_user)
+        session.commit()
+
+        session.add(second_user)
+
+        with pytest.raises(IntegrityError):
+            session.commit()
+
+        session.rollback()
+
+    engine.dispose()
+
+
+def test_username_with_invalid_characters_is_rejected() -> None:
+    """用户名包含非法字符时不能通过 ORM 验证。"""
+
+    with pytest.raises(ValueError):
+        User(
+            username="student@008",
+            display_name="Invalid Username",
+            password_hash="test-hash",
+        )
