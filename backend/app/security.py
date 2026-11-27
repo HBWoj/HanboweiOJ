@@ -75,6 +75,7 @@ def _is_valid_origin(value: str) -> bool:
         return False
     try:
         parsed = urlsplit(value)
+        _ = parsed.port
         return (
             parsed.scheme in {"http", "https"}
             and bool(parsed.netloc)
