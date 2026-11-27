@@ -1,12 +1,12 @@
-from datetime import UTC, datetime, timedelta
 import uuid
+from datetime import timedelta
 
 import pytest
-from sqlalchemy import create_engine, select
+from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
 from app.db import Base
-from app.models import User, UserSession
+from app.models import User
 from app.sessions import (
     create_session,
     resolve_session,
