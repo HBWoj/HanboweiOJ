@@ -12,6 +12,22 @@ permissions:
 jobs:
   backend:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: hanboweioj_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d hanboweioj_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DATABASE_URL: postgresql+psycopg://postgres:postgres@localhost:5432/hanboweioj_test
     defaults:
       run:
         working-directory: backend
@@ -24,8 +40,14 @@ jobs:
           cache-dependency-path: backend/pyproject.toml
       - name: Install backend
         run: python -m pip install -e ".[dev]"
+      - name: Check Python style
+        run: |
+          python -m ruff check .
+          python -m ruff format --check .
       - name: Run backend tests
         run: python -m pytest
+      - name: Verify database migrations
+        run: python -m alembic upgrade head
 
   frontend:
     runs-on: ubuntu-latest
