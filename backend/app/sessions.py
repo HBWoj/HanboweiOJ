@@ -104,9 +104,7 @@ def revoke_session(
     if digest is None:
         return False
 
-    record = db.scalar(
-        select(UserSession).where(UserSession.token_hash == digest)
-    )
+    record = db.scalar(select(UserSession).where(UserSession.token_hash == digest))
     if record is None or record.revoked_at is not None:
         return False
 
