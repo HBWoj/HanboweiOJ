@@ -1,5 +1,5 @@
-from datetime import datetime, timedelta, timezone
 import uuid
+from datetime import UTC, datetime, timedelta
 
 import pytest
 from sqlalchemy import create_engine
@@ -39,7 +39,7 @@ def add_session(
     user_id: uuid.UUID,
     token_hash: str = "a" * 64,
 ) -> UserSession:
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     record = UserSession(
         user_id=user_id,
         token_hash=token_hash,
