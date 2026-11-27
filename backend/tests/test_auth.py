@@ -72,21 +72,27 @@ def test_authenticate_user_rejects_incorrect_password(session: Session) -> None:
 
 
 def test_authenticate_user_rejects_unknown_username(session: Session) -> None:
-    assert authenticate_user(
-        session,
-        "unknown001",
-        "A valid test password!",
-    ) is None
+    assert (
+        authenticate_user(
+            session,
+            "unknown001",
+            "A valid test password!",
+        )
+        is None
+    )
 
 
 def test_authenticate_user_rejects_inactive_account(session: Session) -> None:
     add_user(session, is_active=False)
 
-    assert authenticate_user(
-        session,
-        "student001",
-        "A valid test password!",
-    ) is None
+    assert (
+        authenticate_user(
+            session,
+            "student001",
+            "A valid test password!",
+        )
+        is None
+    )
 
 
 @pytest.mark.parametrize(

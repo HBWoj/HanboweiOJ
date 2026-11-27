@@ -1,5 +1,5 @@
-from datetime import datetime, timedelta, timezone
 import uuid
+from datetime import UTC, datetime, timedelta
 
 import pytest
 from sqlalchemy import create_engine
@@ -39,7 +39,7 @@ def add_session(
     user_id: uuid.UUID,
     token_hash: str = "a" * 64,
 ) -> UserSession:
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     record = UserSession(
         user_id=user_id,
         token_hash=token_hash,
@@ -74,7 +74,7 @@ def test_user_session_token_digest_must_be_unique(session: Session) -> None:
 
 def test_user_session_rejects_digest_with_wrong_length(session: Session) -> None:
     user = add_user(session)
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     record = UserSession(
         user_id=user.id,
         token_hash="too-short",
@@ -92,7 +92,7 @@ def test_user_session_can_be_revoked(session: Session) -> None:
     user = add_user(session)
     record = add_session(session, user.id)
 
-    revoked_at = datetime.now(timezone.utc)
+    revoked_at = datetime.now(UTC)
     record.revoked_at = revoked_at
     session.commit()
     session.refresh(record)
