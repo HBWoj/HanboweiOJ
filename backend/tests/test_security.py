@@ -42,11 +42,14 @@ def test_csrf_token_rejects_invalid_values(
 def test_csrf_token_rejects_wrong_secret() -> None:
     token = create_csrf_token(SECRET)
 
-    assert verify_csrf_token(
-        token,
-        token,
-        "a-different-secret-with-at-least-32-bytes",
-    ) is False
+    assert (
+        verify_csrf_token(
+            token,
+            token,
+            "a-different-secret-with-at-least-32-bytes",
+        )
+        is False
+    )
 
 
 @pytest.mark.parametrize(
