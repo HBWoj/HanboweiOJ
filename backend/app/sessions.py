@@ -80,9 +80,7 @@ def resolve_session(
         raise ValueError("The validation time must be timezone-aware.")
     current_time = current_time.astimezone(UTC)
 
-    record = db.scalar(
-        select(UserSession).where(UserSession.token_hash == digest)
-    )
+    record = db.scalar(select(UserSession).where(UserSession.token_hash == digest))
     if record is None or record.revoked_at is not None:
         return None
     if _as_utc(record.expires_at) <= current_time:
